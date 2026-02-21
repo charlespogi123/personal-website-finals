@@ -7,7 +7,7 @@ function App() {
   const [msg, setMsg] = useState('');
 
   // 1. This is your unique backend URL from Codespaces
-  const BACKEND_URL = 'https://potential-orbit-jj4q97qvp9ppc56p9-3000.app.github.dev';
+  const BACKEND_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000';
 
   // 2. Function to fetch comments
   const fetchComments = async () => {
