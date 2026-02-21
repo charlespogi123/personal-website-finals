@@ -11,7 +11,8 @@ export class CommentsController {
   }
 
   @Post()
-  create(@Body() body: { username: string; content: string }) {
-    return this.commentsService.create(body.username, body.content);
+  async create(@Body() body: { username: string; content: string }) {
+    console.log('Incoming Data:', body); // This will show up in your terminal
+    return await this.commentsService.create(body.username, body.content);
   }
 }

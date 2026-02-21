@@ -21,12 +21,12 @@ export class CommentsService {
     const { data, error } = await this.supabase
       .from('comments')
       .insert([{ username, content }])
-      .select(); // <--- Add this to return the new data to the frontend
+      .select(); // <--- CRUCIAL: This returns the new comment to React
 
     if (error) {
-      console.error("Supabase error:", error.message);
+      console.error("Supabase Error:", error.message);
       throw error;
     }
-    return data;
+    return data[0]; // Return the first (and only) new comment
   }
 }
