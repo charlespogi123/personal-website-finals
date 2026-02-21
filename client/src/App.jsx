@@ -2,16 +2,18 @@ import { useState, useEffect } from 'react';
 import './App.css';
 
 function App() {
-  // 1. Setup State for the comments and the form
   const [comments, setComments] = useState([]);
   const [user, setUser] = useState('');
   const [msg, setMsg] = useState('');
 
-  // 2. Function to fetch comments from your NestJS backend
+  // 1. This is your unique backend URL from Codespaces
+  const BACKEND_URL = 'https://potential-orbit-jj4q97qvp9ppc56p9-3000.app.github.dev';
+
+  // 2. Function to fetch comments
   const fetchComments = async () => {
     try {
-      // Note: When you host on Vercel, change 'localhost:3000' to your backend URL
-      const res = await fetch('http://localhost:3000/comments');
+      // Using the Codespace URL instead of localhost
+      const res = await fetch(`${BACKEND_URL}/comments`);
       const data = await res.json();
       setComments(data);
     } catch (error) {
@@ -19,27 +21,25 @@ function App() {
     }
   };
 
-  // 3. Load comments automatically when the page opens
   useEffect(() => {
     fetchComments();
   }, []);
 
-  // 4. Function to send a new comment to the database
+  // 3. Function to send a new comment
   const handlePost = async (e) => {
-    e.preventDefault(); // Prevents the page from refreshing
+    e.preventDefault();
     if (!user || !msg) return alert("Please fill in both fields!");
 
     try {
-      await fetch('http://localhost:3000/comments', {
+      await fetch(`${BACKEND_URL}/comments`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ username: user, content: msg }),
       });
 
-      // Clear the form and refresh the list
       setUser('');
       setMsg('');
-      fetchComments();
+      fetchComments(); // Refresh list after posting
     } catch (error) {
       console.error("Error posting comment:", error);
     }
@@ -99,7 +99,7 @@ function App() {
           <button type="submit">POST COMMENT</button>
         </form>
 
-        {/* Displaying Comments from Supabase */}
+        {/* Displaying Comments */}
         <div style={{ maxWidth: '600px', margin: '40px auto', textAlign: 'left' }}>
           {comments.map((c) => (
             <div key={c.id} style={{ borderBottom: '1px solid #333', padding: '20px 0' }}>
