@@ -14,40 +14,36 @@ function App() {
   const [msg, setMsg] = useState('');
   const [connections, setConnections] = useState([]);
 
-  // Connections & Modal State
-  const [showModal, setShowModal] = useState(false);
+  // Modal States
+  const [showConnectModal, setShowConnectModal] = useState(false);
+  const [showProfileModal, setShowProfileModal] = useState(false);
+  const [selectedProfile, setSelectedProfile] = useState(null);
+
+  // Form States
   const [newFriendName, setNewFriendName] = useState('');
+  const [newDescription, setNewDescription] = useState('');
   const [selectedFile, setSelectedFile] = useState(null);
   const [isUploading, setIsUploading] = useState(false);
 
-  // Switch between Local and Vercel URL automatically
   const BACKEND_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000';
 
   const fetchData = async () => {
     try {
-      // 1. Fetch Comments from NestJS
+      // Fetch Chat
       const res = await fetch(`${BACKEND_URL}/comments`);
-      if (res.ok) {
-        const data = await res.json();
-        setComments(data);
-      }
+      if (res.ok) setComments(await res.json());
 
-      // 2. Fetch Connections from Supabase
-      const { data: connData, error } = await supabase
+      // Fetch Connections
+      const { data, error } = await supabase
         .from('connections')
         .select('*')
         .order('created_at', { ascending: false });
-      
-      if (connData) setConnections(connData);
-      if (error) console.error("Supabase Error:", error);
-    } catch (error) {
-      console.error("Fetch Error:", error);
-    }
+      if (data) setConnections(data);
+      if (error) console.error(error);
+    } catch (e) { console.error(e); }
   };
 
-  useEffect(() => {
-    fetchData();
-  }, []);
+  useEffect(() => { fetchData(); }, []);
 
   const handleConnect = async (e) => {
     e.preventDefault();
@@ -57,38 +53,40 @@ function App() {
     let finalImgUrl = 'https://tr.rbxcdn.com/30day-avatarheadshot/150/150/AvatarHeadshot/Png';
 
     try {
-      // 1. Handle File Upload to Supabase Storage
       if (selectedFile) {
-        const fileExt = selectedFile.name.split('.').pop();
-        const fileName = `${Date.now()}.${fileExt}`;
-        
-        const { error: uploadError } = await supabase.storage
-          .from('avatars') 
-          .upload(fileName, selectedFile);
-
-        if (uploadError) throw uploadError;
-
+        const fileName = `${Date.now()}-${selectedFile.name}`;
+        const { error: upErr } = await supabase.storage.from('avatars').upload(fileName, selectedFile);
+        if (upErr) throw upErr;
         const { data } = supabase.storage.from('avatars').getPublicUrl(fileName);
         finalImgUrl = data.publicUrl;
       }
 
-      // 2. Insert record into Database
-      const { error: dbError } = await supabase
+      const { error: dbErr } = await supabase
         .from('connections')
-        .insert([{ name: newFriendName, image_url: finalImgUrl }]);
+        .insert([{ 
+          name: newFriendName, 
+          image_url: finalImgUrl,
+          description: newDescription 
+        }]);
 
-      if (dbError) throw dbError;
+      if (dbErr) throw dbErr;
 
-      // 3. Reset and Refresh
+      // Reset
       setNewFriendName('');
+      setNewDescription('');
       setSelectedFile(null);
-      setShowModal(false);
+      setShowConnectModal(false);
       fetchData();
     } catch (err) {
-      alert("Error: " + err.message);
+      alert(err.message);
     } finally {
       setIsUploading(false);
     }
+  };
+
+  const openProfile = (friend) => {
+    setSelectedProfile(friend);
+    setShowProfileModal(true);
   };
 
   const handlePost = async (e) => {
@@ -107,46 +105,60 @@ function App() {
 
   return (
     <div className="charblox-container">
-      {/* UPLOAD MODAL */}
-      {showModal && (
+      {/* MODAL: CONNECT */}
+      {showConnectModal && (
         <div className="modal-overlay">
           <div className="modal-content">
             <h3>Connect with Charles</h3>
             <form onSubmit={handleConnect}>
               <label>Your Name</label>
-              <input 
-                type="text" 
-                placeholder="Username..." 
-                value={newFriendName}
-                onChange={(e) => setNewFriendName(e.target.value)}
-                required
+              <input type="text" placeholder="Username..." value={newFriendName} onChange={(e) => setNewFriendName(e.target.value)} required />
+              
+              <label>About You (Description)</label>
+              <textarea 
+                className="modal-textarea" 
+                placeholder="What's on your mind?" 
+                value={newDescription}
+                onChange={(e) => setNewDescription(e.target.value)}
               />
+
               <label>Profile Photo</label>
-              <input 
-                type="file" 
-                accept="image/*"
-                className="file-input"
-                onChange={(e) => setSelectedFile(e.target.files[0])}
-              />
+              <input type="file" accept="image/*" className="file-input" onChange={(e) => setSelectedFile(e.target.files[0])} />
+              
               <div className="modal-actions">
-                <button type="button" className="cancel-btn" onClick={() => setShowModal(false)}>Cancel</button>
-                <button type="submit" className="save-btn" disabled={isUploading}>
-                  {isUploading ? 'Uploading...' : 'Connect!'}
-                </button>
+                <button type="button" className="cancel-btn" onClick={() => setShowConnectModal(false)}>Cancel</button>
+                <button type="submit" className="save-btn" disabled={isUploading}>{isUploading ? 'Uploading...' : 'Connect!'}</button>
               </div>
             </form>
           </div>
         </div>
       )}
 
+      {/* MODAL: VIEW PROFILE */}
+      {showProfileModal && selectedProfile && (
+        <div className="modal-overlay" onClick={() => setShowProfileModal(false)}>
+          <div className="modal-content profile-card" onClick={e => e.stopPropagation()}>
+            <div className="profile-header">
+              <div className="profile-avatar-large">
+                <img src={selectedProfile.image_url} alt={selectedProfile.name} />
+              </div>
+              <h2>{selectedProfile.name}</h2>
+            </div>
+            <div className="profile-body">
+              <label>Description</label>
+              <div className="description-box">
+                {selectedProfile.description || "No description provided."}
+              </div>
+            </div>
+            <button className="cancel-btn full-width" onClick={() => setShowProfileModal(false)}>Close</button>
+          </div>
+        </div>
+      )}
+
+      {/* NAVBAR */}
       <header className="charblox-nav">
-        <div className="nav-left">
-          <div className="menu-icon">☰</div>
-          <h1 className="logo">CHARBLOX</h1>
-        </div>
-        <div className="nav-search-container">
-          <input type="text" placeholder="Search Experiences" className="nav-search-input" />
-        </div>
+        <div className="nav-left"><h1 className="logo">CHARBLOX</h1></div>
+        <div className="nav-search-container"><input type="text" placeholder="Search Experiences" className="nav-search-input" /></div>
         <div className="nav-right">
           <span className="robux-count">⏣ 1M+</span>
           <div className="user-settings">⚙️</div>
@@ -164,39 +176,19 @@ function App() {
         <section className="charblox-section">
           <h3>Connections ({connections.length})</h3>
           <div className="friends-scroll">
-            <div className="friend-item connect-trigger" onClick={() => setShowModal(true)}>
+            <div className="friend-item connect-trigger" onClick={() => setShowConnectModal(true)}>
               <div className="friend-img-placeholder connect-plus">+</div>
               <span className="friend-name">Connect!</span>
             </div>
 
             {connections.map((f) => (
-              <div key={f.id} className="friend-item">
+              <div key={f.id} className="friend-item" onClick={() => openProfile(f)}>
                 <div className="friend-img-placeholder">
                   <img src={f.image_url} alt={f.name} className="friend-avatar-img" />
                 </div>
                 <span className="friend-name">{f.name}</span>
               </div>
             ))}
-          </div>
-        </section>
-
-        <section className="charblox-section">
-          <h3>My Experiences</h3>
-          <div className="experience-grid">
-            <div className="exp-card">
-              <div className="exp-banner port-tycoon"></div>
-              <div className="exp-info">
-                <h4>Portfolio Tycoon</h4>
-                <p className="rating">👍 98%</p>
-              </div>
-            </div>
-            <div className="exp-card">
-              <div className="exp-banner react-sim"></div>
-              <div className="exp-info">
-                <h4>React Simulator</h4>
-                <p className="rating">👍 100%</p>
-              </div>
-            </div>
           </div>
         </section>
 
