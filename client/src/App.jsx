@@ -42,14 +42,13 @@ function App() {
 
   return (
     <div className="charblox-container">
-      {/* Top Navigation Bar */}
       <header className="charblox-nav">
         <div className="nav-left">
           <div className="menu-icon">☰</div>
           <h1 className="logo">CHARBLOX</h1>
         </div>
         <div className="nav-search-container">
-          <input type="text" placeholder="Search" className="nav-search-input" />
+          <input type="text" placeholder="Search Experiences..." className="nav-search-input" />
         </div>
         <div className="nav-right">
           <span className="robux-count"><span className="robux-icon">⏣</span> 1M+</span>
@@ -58,22 +57,20 @@ function App() {
       </header>
 
       <main className="main-content">
-        {/* Profile/Hero Section */}
         <section className="charblox-hero">
           <div className="avatar-circle">
-            <img src="https://tr.rbxcdn.com/30day-avatarheadshot/150/150/AvatarHeadshot/Png" alt="Avatar" />
+            <img src="https://tr.rbxcdn.com/30day-avatarheadshot/150/150/AvatarHeadshot/Png" alt="Charles" />
           </div>
           <h2 className="welcome-text">Hello, <span className="username">Charles</span>!</h2>
         </section>
 
-        {/* Friends Section (Skills) */}
         <section className="charblox-section">
           <div className="section-header">
             <h3>Friends</h3>
             <span className="see-all">See All →</span>
           </div>
           <div className="friends-scroll">
-            {['React', 'NestJS', 'Supabase', 'Vercel', 'UI/UX', 'Node'].map((friend) => (
+            {['React', 'NestJS', 'Supabase', 'Vercel', 'UI/UX', 'Node', 'TypeScript'].map((friend) => (
               <div key={friend} className="friend-item">
                 <div className="friend-img-placeholder"></div>
                 <span className="friend-name">{friend}</span>
@@ -82,7 +79,6 @@ function App() {
           </div>
         </section>
 
-        {/* Experiences Section */}
         <section className="charblox-section">
           <div className="section-header">
             <h3>My Experiences</h3>
@@ -106,9 +102,10 @@ function App() {
           </div>
         </section>
 
-        {/* Global Chat (Comments) */}
-        <section className="charblox-section chat-section">
-          <h3>Global Chat</h3>
+        <section className="charblox-section">
+          <div className="section-header">
+            <h3>Global Chat</h3>
+          </div>
           <div className="chat-box">
             <div className="chat-history">
               {comments.map((c) => (
@@ -122,7 +119,7 @@ function App() {
             <form className="chat-controls" onSubmit={handlePost}>
               <input 
                 type="text" 
-                placeholder="Name" 
+                placeholder="Display Name" 
                 className="chat-user-input"
                 value={user} 
                 onChange={(e) => setUser(e.target.value)} 
