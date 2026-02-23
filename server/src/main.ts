@@ -3,8 +3,13 @@ import { AppModule } from './app.module';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-  // This line allows your React app to send data to the server
-  app.enableCors(); 
-  await app.listen(process.env.PORT ?? 3000);
+  
+  app.enableCors({
+    origin: 'https://personal-website-finals-d58r.vercel.app', // Your actual frontend URL
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+    credentials: true,
+  });
+
+  await app.listen(3000);
 }
 bootstrap();
