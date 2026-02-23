@@ -21,12 +21,6 @@ function App() {
   const [activeItem, setActiveItem] = useState(null);
   const [viewType, setViewType] = useState('');
 
-  // Form States
-  const [newFriendName, setNewFriendName] = useState('');
-  const [newDescription, setNewDescription] = useState('');
-  const [selectedFile, setSelectedFile] = useState(null);
-  const [isUploading, setIsUploading] = useState(false);
-
   const BACKEND_URL = 'https://potential-orbit-jj4q97qvp9ppc56p9-3000.app.github.dev';
 
   const fetchData = async () => {
@@ -70,10 +64,10 @@ function App() {
   };
 
   return (
-    <div className="charblox-app">
+    <div className="app-wrapper">
       {/* NAVBAR */}
       <header className="navbar">
-        <div className="nav-container">
+        <div className="nav-inner">
           <h1 className="brand">CHARBLOX</h1>
           <div className="search-bar">
             <input type="text" placeholder="Search experiences..." />
@@ -85,75 +79,82 @@ function App() {
         </div>
       </header>
 
-      <main className="container">
-        {/* HERO SECTION */}
-        <section className="hero">
-          <img src="https://tr.rbxcdn.com/30day-avatarheadshot/150/150/AvatarHeadshot/Png" alt="Charles" />
-          <h2>Hello, <span>Charles</span>!</h2>
-        </section>
+      <main className="main-content">
+        <div className="content-inner">
+          
+          {/* HERO SECTION */}
+          <section className="hero">
+            <img src="https://tr.rbxcdn.com/30day-avatarheadshot/150/150/AvatarHeadshot/Png" alt="Charles" />
+            <h2>Hello, <span>Charles</span>!</h2>
+          </section>
 
-        {/* CONNECTIONS */}
-        <section className="section">
-          <div className="section-head">
-            <h3>Connections ({connections.length})</h3>
-            <span className="see-all">See All →</span>
-          </div>
-          <div className="scroll-row">
-            <div className="friend-card" onClick={() => setShowConnectModal(true)}>
-              <div className="circle-thumb plus">+</div>
-              <span>Connect</span>
+          {/* CONNECTIONS */}
+          <section className="section">
+            <div className="section-head">
+              <h3>Connections ({connections.length})</h3>
+              <span className="see-all">See All →</span>
             </div>
-            {connections.map(f => (
-              <div key={f.id} className="friend-card" onClick={() => openDetails(f, 'profile')}>
-                <div className="circle-thumb"><img src={f.image_url} alt={f.name} /></div>
-                <span>{f.name}</span>
+            <div className="scroll-row">
+              <div className="friend-card" onClick={() => setShowConnectModal(true)}>
+                <div className="circle-thumb plus">+</div>
+                <span>Connect</span>
               </div>
-            ))}
-          </div>
-        </section>
-
-        {/* EXPERIENCES */}
-        <section className="section">
-          <div className="section-head">
-            <h3>My Experiences</h3>
-            <span className="see-all">See All →</span>
-          </div>
-          <div className="experience-grid">
-            {experiences.map(exp => (
-              <div key={exp.id} className="game-card" onClick={() => openDetails(exp, 'experience')}>
-                <div className="game-thumb">
-                  <img src={exp.image_url || 'https://via.placeholder.com/150'} alt={exp.title} />
-                </div>
-                <div className="game-meta">
-                  <span className="game-title">{exp.title}</span>
-                  <span>👍 {exp.rating}%</span>
-                </div>
-              </div>
-            ))}
-          </div>
-        </section>
-
-        {/* GLOBAL CHAT */}
-        <section className="section">
-          <h3>Global Chat</h3>
-          <div className="chat-window">
-            <div className="chat-log">
-              {comments.length === 0 ? <p className="chat-empty">No messages yet...</p> : comments.map(c => (
-                <div key={c.id} className="chat-msg">
-                  <span className="chat-user">[{c.username}]:</span> {c.content}
+              {connections.map(f => (
+                <div key={f.id} className="friend-card" onClick={() => openDetails(f, 'profile')}>
+                  <div className="circle-thumb">
+                    <img src={f.image_url} alt={f.name} />
+                  </div>
+                  <span>{f.name}</span>
                 </div>
               ))}
             </div>
-            <form className="chat-input" onSubmit={handlePost}>
-              <input type="text" placeholder="User" value={user} onChange={(e) => setUser(e.target.value)} className="user-input" />
-              <input type="text" placeholder="Say something..." value={msg} onChange={(e) => setMsg(e.target.value)} className="msg-input" />
-              <button type="submit">Send</button>
-            </form>
-          </div>
-        </section>
+          </section>
+
+          {/* EXPERIENCES */}
+          <section className="section">
+            <div className="section-head">
+              <h3>My Experiences</h3>
+              <span className="see-all">See All →</span>
+            </div>
+            <div className="experience-grid">
+              {experiences.map(exp => (
+                <div key={exp.id} className="game-card" onClick={() => openDetails(exp, 'experience')}>
+                  <div className="game-thumb">
+                    <img src={exp.image_url || 'https://via.placeholder.com/150'} alt={exp.title} />
+                  </div>
+                  <div className="game-meta">
+                    <span className="game-title">{exp.title}</span>
+                    <span>👍 {exp.rating}%</span>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </section>
+
+          {/* GLOBAL CHAT */}
+          <section className="section">
+            <div className="section-head">
+                <h3>Global Chat</h3>
+            </div>
+            <div className="chat-window">
+              <div className="chat-log">
+                {comments.length === 0 ? <p className="chat-empty">No messages yet...</p> : comments.map(c => (
+                  <div key={c.id} className="chat-msg">
+                    <span className="chat-user">[{c.username}]:</span> {c.content}
+                  </div>
+                ))}
+              </div>
+              <form className="chat-input" onSubmit={handlePost}>
+                <input type="text" placeholder="User" value={user} onChange={(e) => setUser(e.target.value)} className="user-input" />
+                <input type="text" placeholder="Say something..." value={msg} onChange={(e) => setMsg(e.target.value)} className="msg-input" />
+                <button type="submit">Send</button>
+              </form>
+            </div>
+          </section>
+        </div>
       </main>
 
-      {/* DETAIL MODAL (Simplified for UI reset) */}
+      {/* DETAIL MODAL */}
       {showDetailsModal && activeItem && (
         <div className="modal-backdrop" onClick={() => setShowDetailsModal(false)}>
           <div className="modal-container" onClick={e => e.stopPropagation()}>
