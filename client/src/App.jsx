@@ -14,14 +14,15 @@ function App() {
   const [connections, setConnections] = useState([]);
   const [experiences, setExperiences] = useState([]);
   
-  // MODAL STATES
   const [showDetailsModal, setShowDetailsModal] = useState(false);
   const [showConnectModal, setShowConnectModal] = useState(false);
   const [activeItem, setActiveItem] = useState(null);
 
   // NEW CONNECTION INPUTS
   const [connName, setConnName] = useState('');
-  const [connImg, setConnImg] = useState('');
+  const [connDesc, setConnDesc] = useState('');
+  const [selectedFile, setSelectedFile] = useState(null);
+  const [isUploading, setIsUploading] = useState(false);
 
   const BACKEND_URL = 'https://potential-orbit-jj4q97qvp9ppc56p9-3000.app.github.dev';
 
@@ -42,7 +43,6 @@ function App() {
     return () => clearInterval(timer);
   }, []);
 
-  // Handle Global Chat
   const handlePost = async (e) => {
     e.preventDefault();
     if (!user || !msg) return alert('Fill in both fields!');
@@ -56,22 +56,48 @@ function App() {
     } catch (e) { console.error(e); }
   };
 
-  // Handle Adding New Connection
   const handleAddConnection = async (e) => {
     e.preventDefault();
-    if (!connName || !connImg) return alert("Please provide a name and image URL!");
-    
-    const { error } = await supabase
-      .from('connections')
-      .insert([{ name: connName, image_url: connImg }]);
+    if (!connName) return alert("Please provide a name!");
+    setIsUploading(true);
 
-    if (error) {
-      alert("Error adding connection!");
-    } else {
+    let finalImgUrl = 'https://tr.rbxcdn.com/30day-avatarheadshot/150/150/AvatarHeadshot/Png';
+
+    try {
+      // 1. Upload File if selected
+      if (selectedFile) {
+        const fileName = `${Date.now()}-${selectedFile.name}`;
+        const { error: uploadError } = await supabase.storage
+          .from('avatars')
+          .upload(fileName, selectedFile);
+        
+        if (uploadError) throw uploadError;
+
+        const { data } = supabase.storage.from('avatars').getPublicUrl(fileName);
+        finalImgUrl = data.publicUrl;
+      }
+
+      // 2. Insert into Table
+      const { error } = await supabase
+        .from('connections')
+        .insert([{ 
+          name: connName, 
+          description: connDesc, 
+          image_url: finalImgUrl 
+        }]);
+
+      if (error) throw error;
+
+      // 3. Reset
       setConnName('');
-      setConnImg('');
+      setConnDesc('');
+      setSelectedFile(null);
       setShowConnectModal(false);
-      fetchData(); // Refresh list
+      fetchData();
+    } catch (err) {
+      alert(err.message);
+    } finally {
+      setIsUploading(false);
     }
   };
 
@@ -108,7 +134,6 @@ function App() {
               <span className="see-all">See All →</span>
             </div>
             <div className="scroll-row">
-              {/* CONNECT BUTTON FIXED HERE */}
               <div className="friend-card" onClick={() => setShowConnectModal(true)}>
                 <div className="circle-thumb plus">+</div>
                 <span>Connect</span>
@@ -123,7 +148,6 @@ function App() {
             </div>
           </section>
 
-          {/* MY EXPERIENCES */}
           <section className="section">
             <div className="section-head">
               <h3>My Experiences</h3>
@@ -144,7 +168,6 @@ function App() {
             </div>
           </section>
 
-          {/* GLOBAL CHAT */}
           <section className="section">
             <div className="section-head"><h3>Global Chat</h3></div>
             <div className="chat-window">
@@ -169,35 +192,48 @@ function App() {
       {showDetailsModal && activeItem && (
         <div className="modal-backdrop" onClick={() => setShowDetailsModal(false)}>
           <div className="modal-container" onClick={e => e.stopPropagation()}>
+            <img src={activeItem.image_url} alt="" style={{width: '80px', height: '80px', borderRadius: '50%', marginBottom: '10px'}} />
             <h2>{activeItem.title || activeItem.name}</h2>
-            <p>{activeItem.description || "No description provided."}</p>
+            <p style={{color: '#ccc', margin: '15px 0'}}>{activeItem.description || "No description provided."}</p>
             <button className="btn-secondary" onClick={() => setShowDetailsModal(false)}>Close</button>
           </div>
         </div>
       )}
 
-      {/* MODAL: CONNECT (ADD FRIEND) */}
+      {/* MODAL: CONNECT (RE-FIXED) */}
       {showConnectModal && (
         <div className="modal-backdrop" onClick={() => setShowConnectModal(false)}>
           <div className="modal-container" onClick={e => e.stopPropagation()}>
-            <h2>Add New Connection</h2>
+            <h2>Connect with Charles</h2>
             <form onSubmit={handleAddConnection} className="modal-form">
+              <label>Name</label>
               <input 
                 type="text" 
-                placeholder="Name" 
+                placeholder="Your name" 
                 value={connName} 
                 onChange={(e) => setConnName(e.target.value)} 
                 className="modal-input"
+                required
               />
-              <input 
-                type="text" 
-                placeholder="Image URL" 
-                value={connImg} 
-                onChange={(e) => setConnImg(e.target.value)} 
+              <label>About You</label>
+              <textarea 
+                placeholder="Write a short bio..." 
+                value={connDesc} 
+                onChange={(e) => setConnDesc(e.target.value)} 
                 className="modal-input"
+                style={{minHeight: '80px', resize: 'none'}}
+              />
+              <label>Profile Image</label>
+              <input 
+                type="file" 
+                onChange={(e) => setSelectedFile(e.target.files[0])} 
+                className="modal-input"
+                accept="image/*"
               />
               <div className="modal-buttons">
-                <button type="submit" className="btn-primary">Connect</button>
+                <button type="submit" className="btn-primary" disabled={isUploading}>
+                  {isUploading ? 'Connecting...' : 'Connect'}
+                </button>
                 <button type="button" className="btn-secondary" onClick={() => setShowConnectModal(false)}>Cancel</button>
               </div>
             </form>
