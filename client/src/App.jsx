@@ -6,6 +6,17 @@ function App() {
   const [user, setUser] = useState('');
   const [msg, setMsg] = useState('');
 
+  // --- NEW STATE FOR CONNECTIONS ---
+  const [showModal, setShowModal] = useState(false);
+  const [newFriendName, setNewFriendName] = useState('');
+  const [newFriendImg, setNewFriendImg] = useState('');
+  const [connections, setConnections] = useState([
+    { name: 'React', img: '' },
+    { name: 'NestJS', img: '' },
+    { name: 'Supabase', img: '' },
+    { name: 'Vercel', img: '' }
+  ]);
+
   const BACKEND_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000';
 
   const fetchComments = async () => {
@@ -21,6 +32,22 @@ function App() {
   useEffect(() => {
     fetchComments();
   }, []);
+
+  const handleConnect = (e) => {
+    e.preventDefault();
+    if (!newFriendName) return alert("Please enter a name!");
+    
+    // Add new person to the list
+    const newFriend = {
+      name: newFriendName,
+      img: newFriendImg || 'https://tr.rbxcdn.com/30day-avatarheadshot/150/150/AvatarHeadshot/Png' // Default if empty
+    };
+    
+    setConnections([newFriend, ...connections]);
+    setNewFriendName('');
+    setNewFriendImg('');
+    setShowModal(false);
+  };
 
   const handlePost = async (e) => {
     e.preventDefault();
@@ -38,6 +65,35 @@ function App() {
 
   return (
     <div className="charblox-container">
+      {/* --- MODAL POPUP --- */}
+      {showModal && (
+        <div className="modal-overlay">
+          <div className="modal-content">
+            <h3>Connect with Charles</h3>
+            <form onSubmit={handleConnect}>
+              <label>What's your name?</label>
+              <input 
+                type="text" 
+                placeholder="Username..." 
+                value={newFriendName}
+                onChange={(e) => setNewFriendName(e.target.value)}
+              />
+              <label>Profile Image URL (Optional)</label>
+              <input 
+                type="text" 
+                placeholder="Paste link here..." 
+                value={newFriendImg}
+                onChange={(e) => setNewFriendImg(e.target.value)}
+              />
+              <div className="modal-actions">
+                <button type="button" className="cancel-btn" onClick={() => setShowModal(false)}>Cancel</button>
+                <button type="submit" className="save-btn">Connect</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
       <header className="charblox-nav">
         <div className="nav-left">
           <div className="menu-icon">☰</div>
@@ -61,17 +117,26 @@ function App() {
         </section>
 
         <section className="charblox-section">
-          <h3>Friends</h3>
+          <h3>Connections ({connections.length})</h3>
           <div className="friends-scroll">
-            {['React', 'NestJS', 'Supabase', 'Vercel', 'UI/UX', 'Node'].map(f => (
-              <div key={f} className="friend-item">
-                <div className="friend-img-placeholder"></div>
-                <span className="friend-name">{f}</span>
+            {/* --- THE CONNECT BUTTON --- */}
+            <div className="friend-item connect-trigger" onClick={() => setShowModal(true)}>
+              <div className="friend-img-placeholder connect-plus">+</div>
+              <span className="friend-name">Connect</span>
+            </div>
+
+            {connections.map((f, index) => (
+              <div key={index} className="friend-item">
+                <div className="friend-img-placeholder">
+                  {f.img ? <img src={f.img} alt={f.name} className="friend-avatar-img" /> : null}
+                </div>
+                <span className="friend-name">{f.name}</span>
               </div>
             ))}
           </div>
         </section>
 
+        {/* Experiences and Chat remain same below... */}
         <section className="charblox-section">
           <h3>My Experiences</h3>
           <div className="experience-grid">
