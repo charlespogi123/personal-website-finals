@@ -13,8 +13,15 @@ function App() {
   const [msg, setMsg] = useState('');
   const [connections, setConnections] = useState([]);
   const [experiences, setExperiences] = useState([]);
+  
+  // MODAL STATES
   const [showDetailsModal, setShowDetailsModal] = useState(false);
+  const [showConnectModal, setShowConnectModal] = useState(false);
   const [activeItem, setActiveItem] = useState(null);
+
+  // NEW CONNECTION INPUTS
+  const [connName, setConnName] = useState('');
+  const [connImg, setConnImg] = useState('');
 
   const BACKEND_URL = 'https://potential-orbit-jj4q97qvp9ppc56p9-3000.app.github.dev';
 
@@ -35,6 +42,7 @@ function App() {
     return () => clearInterval(timer);
   }, []);
 
+  // Handle Global Chat
   const handlePost = async (e) => {
     e.preventDefault();
     if (!user || !msg) return alert('Fill in both fields!');
@@ -46,6 +54,25 @@ function App() {
       });
       if (response.ok) { setUser(''); setMsg(''); fetchData(); }
     } catch (e) { console.error(e); }
+  };
+
+  // Handle Adding New Connection
+  const handleAddConnection = async (e) => {
+    e.preventDefault();
+    if (!connName || !connImg) return alert("Please provide a name and image URL!");
+    
+    const { error } = await supabase
+      .from('connections')
+      .insert([{ name: connName, image_url: connImg }]);
+
+    if (error) {
+      alert("Error adding connection!");
+    } else {
+      setConnName('');
+      setConnImg('');
+      setShowConnectModal(false);
+      fetchData(); // Refresh list
+    }
   };
 
   const openDetails = (item) => {
@@ -81,10 +108,12 @@ function App() {
               <span className="see-all">See All →</span>
             </div>
             <div className="scroll-row">
-              <div className="friend-card">
+              {/* CONNECT BUTTON FIXED HERE */}
+              <div className="friend-card" onClick={() => setShowConnectModal(true)}>
                 <div className="circle-thumb plus">+</div>
                 <span>Connect</span>
               </div>
+              
               {connections.map(f => (
                 <div key={f.id} className="friend-card" onClick={() => openDetails(f)}>
                   <div className="circle-thumb"><img src={f.image_url} alt={f.name} /></div>
@@ -94,6 +123,7 @@ function App() {
             </div>
           </section>
 
+          {/* MY EXPERIENCES */}
           <section className="section">
             <div className="section-head">
               <h3>My Experiences</h3>
@@ -114,6 +144,7 @@ function App() {
             </div>
           </section>
 
+          {/* GLOBAL CHAT */}
           <section className="section">
             <div className="section-head"><h3>Global Chat</h3></div>
             <div className="chat-window">
@@ -134,12 +165,42 @@ function App() {
         </div>
       </main>
 
+      {/* MODAL: DETAILS */}
       {showDetailsModal && activeItem && (
         <div className="modal-backdrop" onClick={() => setShowDetailsModal(false)}>
           <div className="modal-container" onClick={e => e.stopPropagation()}>
             <h2>{activeItem.title || activeItem.name}</h2>
             <p>{activeItem.description || "No description provided."}</p>
-            <button style={{marginTop: '20px', padding: '10px'}} onClick={() => setShowDetailsModal(false)}>Close</button>
+            <button className="btn-secondary" onClick={() => setShowDetailsModal(false)}>Close</button>
+          </div>
+        </div>
+      )}
+
+      {/* MODAL: CONNECT (ADD FRIEND) */}
+      {showConnectModal && (
+        <div className="modal-backdrop" onClick={() => setShowConnectModal(false)}>
+          <div className="modal-container" onClick={e => e.stopPropagation()}>
+            <h2>Add New Connection</h2>
+            <form onSubmit={handleAddConnection} className="modal-form">
+              <input 
+                type="text" 
+                placeholder="Name" 
+                value={connName} 
+                onChange={(e) => setConnName(e.target.value)} 
+                className="modal-input"
+              />
+              <input 
+                type="text" 
+                placeholder="Image URL" 
+                value={connImg} 
+                onChange={(e) => setConnImg(e.target.value)} 
+                className="modal-input"
+              />
+              <div className="modal-buttons">
+                <button type="submit" className="btn-primary">Connect</button>
+                <button type="button" className="btn-secondary" onClick={() => setShowConnectModal(false)}>Cancel</button>
+              </div>
+            </form>
           </div>
         </div>
       )}
