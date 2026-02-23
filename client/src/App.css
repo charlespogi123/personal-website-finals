@@ -170,3 +170,45 @@ body {
   z-index: 999;
 }
 .modal-container { background: var(--card); padding: 30px; border-radius: 12px; width: 400px; }
+
+/* ADD TO App.css */
+.modal-form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  margin-top: 20px;
+}
+
+.modal-input {
+  padding: 12px;
+  background: #0c0d0f;
+  border: 1px solid #333;
+  color: white;
+  border-radius: 6px;
+}
+
+.modal-buttons {
+  display: flex;
+  gap: 10px;
+}
+
+.btn-primary {
+  flex: 1;
+  background: var(--blue);
+  color: white;
+  border: none;
+  padding: 10px;
+  border-radius: 4px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.btn-secondary {
+  flex: 1;
+  background: #333;
+  color: white;
+  border: none;
+  padding: 10px;
+  border-radius: 4px;
+  cursor: pointer;
+}
