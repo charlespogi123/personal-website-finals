@@ -29,7 +29,7 @@ function App() {
   const [isUploading, setIsUploading] = useState(false);
 
   // Connection URL: Priority to .env for Codespaces/Vercel
-  const BACKEND_URL = 'https://potential-orbit-jj4q97qvp9ppc56p9-3000.app.github.dev/' || 'http://localhost:3000';
+  const BACKEND_URL = 'https://potential-orbit-jj4q97qvp9ppc56p9-3000.app.github.dev' || 'http://localhost:3000';
 
   const fetchData = async () => {
     try {
