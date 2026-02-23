@@ -175,7 +175,12 @@ function App() {
             {experiences.map(exp => (
               <div key={exp.id} className="game-card" onClick={() => openDetails(exp, 'experience')}>
                 <div className="game-thumb">
-                  {exp.image_url ? <img src={exp.image_url} alt={exp.title} /> : <div className="placeholder-thumb" />}
+                  {/* Added alt and error handling */}
+                  <img 
+                    src={exp.image_url || 'https://via.placeholder.com/150'} 
+                    alt={exp.title} 
+                    onError={(e) => { e.target.src = 'https://via.placeholder.com/150'; }}
+                  />
                 </div>
                 <div className="game-meta">
                   <span className="game-title">{exp.title}</span>
