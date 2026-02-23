@@ -79,6 +79,7 @@ function App() {
         </div>
       </header>
 
+      {/* CENTERING WRAPPER */}
       <main className="main-content">
         <div className="content-inner">
           
@@ -133,12 +134,10 @@ function App() {
 
           {/* GLOBAL CHAT */}
           <section className="section">
-            <div className="section-head">
-                <h3>Global Chat</h3>
-            </div>
+            <div className="section-head"><h3>Global Chat</h3></div>
             <div className="chat-window">
               <div className="chat-log">
-                {comments.length === 0 ? <p className="chat-empty">No messages yet...</p> : comments.map(c => (
+                {comments.map(c => (
                   <div key={c.id} className="chat-msg">
                     <span className="chat-user">[{c.username}]:</span> {c.content}
                   </div>
@@ -146,7 +145,7 @@ function App() {
               </div>
               <form className="chat-input" onSubmit={handlePost}>
                 <input type="text" placeholder="User" value={user} onChange={(e) => setUser(e.target.value)} className="user-input" />
-                <input type="text" placeholder="Say something..." value={msg} onChange={(e) => setMsg(e.target.value)} className="msg-input" />
+                <input type="text" placeholder="Say..." value={msg} onChange={(e) => setMsg(e.target.value)} className="msg-input" />
                 <button type="submit">Send</button>
               </form>
             </div>

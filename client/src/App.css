@@ -7,7 +7,6 @@
   --gray: #9ca3af;
 }
 
-/* HARD RESET */
 * {
   margin: 0;
   padding: 0;
@@ -17,15 +16,12 @@
 body {
   background: var(--bg);
   color: var(--white);
-  font-family: 'Segoe UI', Arial, sans-serif;
-  overflow-x: hidden;
+  font-family: 'Segoe UI', sans-serif;
 }
 
-/* APP WRAPPER */
 .app-wrapper {
   min-height: 100vh;
-  display: flex;
-  flex-direction: column;
+  width: 100%;
 }
 
 /* NAVBAR */
@@ -33,61 +29,44 @@ body {
   background: var(--nav);
   border-bottom: 1px solid #222;
   width: 100%;
-  position: sticky;
-  top: 0;
-  z-index: 100;
 }
 
 .nav-inner {
   max-width: 1300px;
-  margin: 0 auto;
-  padding: 12px 25px;
+  margin: 0 auto; /* Centers the inner navbar content */
+  padding: 12px 20px;
   display: flex;
   align-items: center;
   gap: 25px;
 }
 
-.brand {
-  font-size: 20px;
-  font-weight: 900;
-  letter-spacing: 1px;
-}
+.brand { font-size: 22px; font-weight: 800; }
 
-.search-bar {
-  flex: 1;
-}
-
+.search-bar { flex: 1; }
 .search-bar input {
   width: 100%;
-  max-width: 600px;
-  padding: 8px 14px;
+  max-width: 500px;
+  padding: 8px 15px;
   background: #0c0d0f;
   border: 1px solid #333;
-  border-radius: 6px;
+  border-radius: 8px;
   color: white;
 }
 
-.nav-icons {
-  display: flex;
-  gap: 20px;
-  font-weight: 600;
-  font-size: 14px;
-}
-
-/* MAIN CONTENT CENTERING */
+/* MAIN CONTENT LAYOUT FIX */
 .main-content {
-  display: flex;
-  justify-content: center;
   width: 100%;
+  display: flex;
+  justify-content: center; /* This centers the content-inner horizontally */
 }
 
 .content-inner {
   width: 100%;
-  max-width: 1100px; /* Standard Roblox content container width */
+  max-width: 1100px; /* Limits the width of the page content like Roblox */
   padding: 40px 20px;
 }
 
-/* HERO */
+/* HERO SECTION */
 .hero {
   display: flex;
   align-items: center;
@@ -102,56 +81,32 @@ body {
   background: #111;
 }
 
-.hero h2 {
-  font-size: 32px;
-}
+.hero h2 { font-size: 32px; font-weight: 600; }
+.hero span { font-weight: 800; }
 
-.hero span {
-  font-weight: 800;
-}
-
-/* SECTION HEADINGS */
-.section {
-  margin-bottom: 50px;
-}
+/* SECTIONS */
+.section { margin-bottom: 50px; }
 
 .section-head {
   display: flex;
   justify-content: space-between;
-  align-items: flex-end;
+  align-items: center;
   margin-bottom: 15px;
   border-bottom: 1px solid #222;
   padding-bottom: 10px;
 }
 
-.see-all {
-  color: var(--gray);
-  font-size: 14px;
-  cursor: pointer;
-}
+.see-all { color: var(--gray); font-size: 14px; cursor: pointer; }
 
 /* CONNECTIONS ROW */
 .scroll-row {
   display: flex;
-  gap: 20px;
+  gap: 15px;
   overflow-x: auto;
   padding-bottom: 10px;
 }
 
-.scroll-row::-webkit-scrollbar {
-  height: 4px;
-}
-
-.scroll-row::-webkit-scrollbar-thumb {
-  background: #333;
-  border-radius: 10px;
-}
-
-.friend-card {
-  min-width: 100px;
-  text-align: center;
-  cursor: pointer;
-}
+.friend-card { text-align: center; min-width: 100px; cursor: pointer; }
 
 .circle-thumb {
   width: 90px;
@@ -160,30 +115,20 @@ body {
   overflow: hidden;
   background: #222;
   margin: 0 auto 10px;
-  border: 2px solid transparent;
-  transition: 0.2s;
-}
-
-.friend-card:hover .circle-thumb {
-  border-color: #555;
-}
-
-.circle-thumb img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-.circle-thumb.plus {
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 40px;
-  background: #2a2d31;
-  border: 2px dashed #444;
 }
 
-/* EXPERIENCES GRID */
+.circle-thumb img { width: 100%; height: 100%; object-fit: cover; }
+
+.circle-thumb.plus {
+  border: 2px dashed #444;
+  font-size: 30px;
+  color: var(--gray);
+}
+
+/* EXPERIENCE GRID */
 .experience-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
@@ -192,35 +137,23 @@ body {
 
 .game-card {
   background: var(--card);
-  border-radius: 8px;
+  border-radius: 10px;
   overflow: hidden;
-  cursor: pointer;
+  border: 1px solid #222;
   transition: transform 0.2s;
 }
 
-.game-card:hover {
-  transform: translateY(-4px);
-}
+.game-card:hover { transform: translateY(-5px); }
 
-.game-thumb {
-  aspect-ratio: 1 / 1;
-}
+.game-thumb { aspect-ratio: 1/1; background: #000; }
+.game-thumb img { width: 100%; height: 100%; object-fit: cover; }
 
-.game-thumb img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-.game-meta {
-  padding: 12px;
-}
-
+.game-meta { padding: 12px; }
 .game-title {
   display: block;
   font-weight: 700;
   font-size: 15px;
-  margin-bottom: 5px;
+  margin-bottom: 4px;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -236,32 +169,24 @@ body {
   flex-direction: column;
 }
 
-.chat-log {
-  flex: 1;
-  padding: 15px;
-  overflow-y: auto;
-  font-size: 14px;
-}
-
-.chat-user {
-  color: var(--blue);
-  font-weight: bold;
-}
+.chat-log { flex: 1; padding: 15px; overflow-y: auto; }
+.chat-msg { margin-bottom: 8px; font-size: 14px; }
+.chat-user { color: var(--blue); font-weight: bold; }
 
 .chat-input {
   display: flex;
   gap: 10px;
-  padding: 12px;
+  padding: 10px;
   background: #16181b;
   border-top: 1px solid #222;
 }
 
 .chat-input input {
-  padding: 10px;
+  padding: 8px;
   background: #0c0d0f;
   border: 1px solid #333;
-  border-radius: 4px;
   color: white;
+  border-radius: 4px;
 }
 
 .user-input { width: 100px; }
@@ -281,28 +206,15 @@ body {
 .modal-backdrop {
   position: fixed;
   inset: 0;
-  background: rgba(0,0,0,0.85);
+  background: rgba(0,0,0,0.8);
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 1000;
 }
 
 .modal-container {
   background: var(--card);
   padding: 30px;
   border-radius: 12px;
-  width: 90%;
-  max-width: 450px;
-  text-align: center;
-}
-
-.btn-secondary {
-  margin-top: 20px;
-  padding: 10px 25px;
-  background: #333;
-  color: white;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
+  width: 400px;
 }
