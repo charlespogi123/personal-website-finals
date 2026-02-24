@@ -174,7 +174,7 @@ function App() {
   const experienceRef = useRef(null);
   const gallerySectionRef = useRef(null);
 
-  const BACKEND_URL = 'https://potential-orbit-jj4q97qvp9ppc56p9-3000.app.github.dev';
+  const BACKEND_URL = 'https://personal-website-finals-wb7f.vercel.app/';
 
   const nextImage = (images) => {
     setGalleryIndex((prev) => (prev + 1) % images.length);
