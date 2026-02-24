@@ -212,7 +212,7 @@ function App() {
     { 
       title: 'Friends', 
       difficulty: 'Friends', 
-      images: [friend1, friend2, friend3, friend4, friend5, friend6], 
+      images: [friend2, friend1, friend3, friend4, friend5, friend6], 
       desc: 'The squad that keeps me sane through college.'
     },
     { 
