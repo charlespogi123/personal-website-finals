@@ -6,6 +6,31 @@ import './App.css';
 import myRealPhoto from './assets/me.png';
 import myRobloxPhoto from './assets/roblox.png';
 
+// BADGE IMAGES
+import badgeHonor from './assets/honorstudent.png';
+import badgeSHS from './assets/shsgraduate.png';
+import badgeCyber from './assets/cyber.png';
+import badgeWeb from './assets/webbuilder.png';
+import badgeIT from './assets/2ndyearit.png';
+
+
+// EDUCATION IMAGES
+import edu1_1 from './assets/edu_apc1.png';
+import edu1_2 from './assets/edu_apc2.png';
+import edu1_3 from './assets/edu_apc3.png';
+import edu1_4 from './assets/edu_apc4.png';
+import edu1_5 from './assets/edu_apc5.png.png';
+import edu2_1 from './assets/edu_shs1.png';
+import edu2_2 from './assets/edu_shs2.png';
+import edu2_3 from './assets/edu_shs3.png';
+import edu2_4 from './assets/edu_shs4.png';
+import edu2_5 from './assets/edu_shs5.png';
+import edu2_6 from './assets/edu_shs6.png';
+import edu3_1 from './assets/edu_jhs1.png';
+import edu3_2 from './assets/edu_jhs2.png';
+import edu3_3 from './assets/edu_jhs3.png';
+import edu3_4 from './assets/edu_jhs4.png';
+
 // IMPORT LOCAL LOGOS
 import defaultBacon from './assets/bacon.png';
 import pythonLogo from './experiences/python.png';
@@ -46,64 +71,51 @@ const supabase = createClient(
 const badges = [
   {
     id: 1,
-    icon: '🏅',
+    img: badgeHonor,
     label: 'Honor Student',
     desc: 'Consistent honor student 2024–2026',
-    color: 'gold',
+    color: 'black',
   },
   {
     id: 2,
-    icon: '🎓',
+    img: badgeSHS,
     label: 'SHS Graduate',
     desc: 'Graduated with honors in Senior High School',
-    color: 'blue',
+    color: 'black',
   },
   {
     id: 3,
-    icon: '🔐',
+    img: badgeCyber,
     label: 'Cyber Learner',
     desc: 'Actively studying cybersecurity & Kali Linux',
-    color: 'red',
-  },
-  {
-    id: 4,
-    icon: '⚛️',
-    label: 'React Dev',
-    desc: 'Built real-world apps with React',
-    color: 'teal',
+    color: 'black',
   },
   {
     id: 5,
-    icon: '🌐',
+    img: badgeWeb,
     label: 'Web Builder',
     desc: 'Proficient in HTML, CSS & JavaScript',
-    color: 'orange',
-  },
-  {
-    id: 6,
-    icon: '🐍',
-    label: 'Pythonista',
-    desc: 'Advanced Python scripting & automation',
-    color: 'green',
+    color: 'black',
   },
   {
     id: 7,
-    icon: '💻',
+    img: badgeIT,
     label: '2nd Year IT',
     desc: 'Asia Pacific College — BS in IT',
-    color: 'purple',
+    color: 'black',
   },
 ];
 
-// ── EDUCATION DATA ─────────────────────────────────────────
-const education = [
+// ── EDUCATION DATA ──────────────────────────────────────────
+const educationData = [
   {
     title: 'Asia Pacific College',
     subtitle: 'BS Information Technology',
     period: '2024 – Present',
     icon: '🎓',
     color: '#00a2ff',
-    desc: '2nd Year IT student focusing on web development and cybersecurity.',
+    desc: '2nd Year IT student at APC focusing on web development and cybersecurity.',
+    images: [edu1_1, edu1_2, edu1_3, edu1_4, edu1_5],
   },
   {
     title: 'SHS Graduate',
@@ -111,7 +123,8 @@ const education = [
     period: '2022 – 2024',
     icon: '🏅',
     color: '#fbbf24',
-    desc: 'Graduated with honors. Consistent honor student throughout SHS.',
+    desc: 'Graduated with honors. Consistent honor student throughout Senior High School.',
+    images: [edu2_1, edu2_2, edu2_3, edu2_4, edu2_5, edu2_6],
   },
   {
     title: 'Junior High School',
@@ -120,6 +133,7 @@ const education = [
     icon: '📚',
     color: '#34d399',
     desc: 'Completed Junior High School with a strong academic foundation.',
+    images: [edu3_1, edu3_2, edu3_3, edu3_4],
   },
 ];
 
@@ -130,6 +144,14 @@ function App() {
   const [connections, setConnections] = useState([]);
   
   const [showRoblox, setShowRoblox] = useState(false);
+  const [isDark, setIsDark] = useState(true);
+
+  // Apply theme to document
+  useEffect(() => {
+    document.documentElement.setAttribute('data-theme', isDark ? 'dark' : 'light');
+  }, [isDark]);
+  const [showEduModal, setShowEduModal] = useState(false);
+  const [activeEduItem, setActiveEduItem] = useState(null);
 
   const [showDetailsModal, setShowDetailsModal] = useState(false);
   const [showConnectModal, setShowConnectModal] = useState(false);
@@ -207,6 +229,12 @@ function App() {
 
   useEffect(() => { fetchData(); }, []);
 
+  const handleOpenEdu = (item) => {
+    setActiveEduItem(item);
+    setGalleryIndex(0);
+    setShowEduModal(true);
+  };
+
   const handleOpenExperience = (item) => {
     setActiveExperience(item);
     setGalleryIndex(0);
@@ -255,12 +283,23 @@ function App() {
   };
 
   return (
-    <div className="app-container">
+    <div className="app-container" style={{width:"100%",maxWidth:"100%",overflowX:"hidden"}}>
       <div className="main-wrapper">
         <header className="navbar">
           <div className="nav-left">
             <h1 className="brand">CHARBLOX</h1>
+            <span className={showRoblox ? 'status-dot online' : 'status-dot offline'}>
+              ● {showRoblox ? 'ONLINE' : 'OFFLINE'}
+            </span>
           </div>
+          <button
+            className="theme-toggle"
+            onClick={() => setIsDark(prev => !prev)}
+            title={isDark ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
+            aria-label="Toggle theme"
+          >
+            {isDark ? '☀️' : '🌙'}
+          </button>
         </header>
 
         <main className="content-area">
@@ -307,7 +346,7 @@ function App() {
                   onClick={() => handleOpenBadge(badge)}
                 >
                   <div className="badge-icon-wrap">
-                    <span className="badge-icon">{badge.icon}</span>
+                    <img src={badge.img} alt={badge.label} className="badge-img" />
                   </div>
                   <span className="badge-label">{badge.label}</span>
                 </div>
@@ -340,12 +379,10 @@ function App() {
             <div className="experience-box">
               <button className="scroll-btn left" onClick={() => educationRef.current?.scrollBy({ left: -450, behavior: 'smooth' })}>〈</button>
               <div className="scroll-track" ref={educationRef}>
-                {education.map((edu, index) => (
-                  <div key={index} className="tech-tile" style={{ cursor: 'default' }}>
+                {educationData.map((edu, index) => (
+                  <div key={index} className="tech-tile" onClick={() => handleOpenEdu(edu)}>
                     <div className="tile-top" style={{ borderColor: edu.color + '35' }}>
-                      <div className="edu-icon-bg" style={{ background: edu.color + '12' }}>
-                        <span className="edu-icon-big">{edu.icon}</span>
-                      </div>
+                      <img src={edu.images[0]} alt={edu.title} />
                     </div>
                     <div className="tile-info">
                       <div className="friend-name" style={{ textAlign: 'left' }}>{edu.title}</div>
@@ -431,7 +468,9 @@ function App() {
           <div className="roblox-modal badge-modal" onClick={e => e.stopPropagation()}>
             <button className="close-x" onClick={() => setShowBadgeModal(false)}>✕</button>
             <div className={`badge-modal-header badge-${activeBadge.color}`}>
-              <div className="badge-modal-icon">{activeBadge.icon}</div>
+              <div className="badge-modal-icon">
+                <img src={activeBadge.img} alt={activeBadge.label} className="badge-modal-img" />
+              </div>
             </div>
             <div className="badge-modal-body">
               <h2 className="badge-modal-title">{activeBadge.label}</h2>
@@ -506,6 +545,43 @@ function App() {
               <h3 className="desc-label">Description</h3>
               <p className="desc-text">{activeExperience.desc}</p>
               <div className="proficiency-tag">Skill Rating: {activeExperience.rating}%</div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ── EDUCATION MODAL ── */}
+      {showEduModal && activeEduItem && (
+        <div className="modal-backdrop" onClick={() => setShowEduModal(false)}>
+          <div className="roblox-modal exp-detail-view gallery-modal" onClick={e => e.stopPropagation()}>
+            <button className="close-x" onClick={() => setShowEduModal(false)}>✕</button>
+            <div className="exp-header-top">
+              <div className="exp-header-left">
+                <div className="edu-modal-thumb" style={{ background: activeEduItem.color + '18', borderColor: activeEduItem.color + '40' }}>
+                  <span style={{ fontSize: '22px' }}>{activeEduItem.icon}</span>
+                </div>
+                <div className="exp-title-container">
+                  <h2 className="exp-title">{activeEduItem.title}</h2>
+                  <div className="exp-maturity" style={{ color: activeEduItem.color }}>{activeEduItem.period} · {activeEduItem.subtitle}</div>
+                </div>
+              </div>
+            </div>
+            <div className="exp-gallery-wrapper" style={{ position: 'relative', background: '#0a0a0b' }}>
+              <div className="gallery-display" style={{ position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '260px' }}>
+                {activeEduItem.images.length > 1 && (
+                  <>
+                    <button className="gallery-nav-btn left" style={{ zIndex: 1000, position: 'absolute', left: '10px' }} onClick={(e) => { e.stopPropagation(); prevImage(activeEduItem.images); }}>〈</button>
+                    <button className="gallery-nav-btn right" style={{ zIndex: 1000, position: 'absolute', right: '10px' }} onClick={(e) => { e.stopPropagation(); nextImage(activeEduItem.images); }}>〉</button>
+                  </>
+                )}
+                <img key={galleryIndex} src={activeEduItem.images[galleryIndex]} alt={`${activeEduItem.title} ${galleryIndex}`} className="full-view-img" style={{ maxWidth: '100%', maxHeight: '420px', objectFit: 'contain' }} />
+              </div>
+            </div>
+            <div className="profile-tabs"><div className="tab active">About</div></div>
+            <div className="exp-description-section" style={{ padding: '20px' }}>
+              <h3 className="desc-label">About this School</h3>
+              <p className="desc-text">{activeEduItem.desc}</p>
+              <p style={{ fontSize: '12px', color: 'var(--text-4)', marginTop: '10px' }}>Photo {galleryIndex + 1} of {activeEduItem.images.length}</p>
             </div>
           </div>
         </div>
