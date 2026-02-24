@@ -182,7 +182,7 @@ function App() {
   const experienceRef = useRef(null);
   const gallerySectionRef = useRef(null);
 
-  const BACKEND_URL = 'https://potential-orbit-jj4q97qvp9ppc56p9-3000.app.github.dev';
+  const BACKEND_URL = 'https://personal-website-finals-wb7f.vercel.app';
 
   const nextImage = (images) => {
     setGalleryIndex((prev) => (prev + 1) % images.length);
@@ -540,9 +540,9 @@ function App() {
                 <label>Default Avatar</label>
                 <div className="avatar-picker">
                   {[
-                    { key: 'bacon',     src: defaultBacon,     label: 'Bacon' },
+                    { key: 'bacon',     src: defaultBacon,     label: 'Bacon Boy' },
                     { key: 'bacongirl', src: defaultBaconGirl, label: 'Bacon Girl' },
-                    { key: 'avatar3',   src: defaultAvatar3,   label: 'Avatar 3' },
+                    { key: 'avatar3',   src: defaultAvatar3,   label: 'Chammy' },
                   ].map(av => (
                     <button
                       key={av.key}
