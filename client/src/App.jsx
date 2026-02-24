@@ -13,13 +13,6 @@ import badgeCyber from './assets/cyber.png';
 import badgeWeb from './assets/webbuilder.png';
 import badgeIT from './assets/2ndyearit.png';
 
-// BADGE IMAGES
-import badgeHonor from './assets/honorstudent.png';
-import badgeSHS from './assets/shsgraduate.png';
-import badgeCyber from './assets/cyber.png';
-import badgeWeb from './assets/webbuilder.png';
-import badgeIT from './assets/2ndyearit.png';
-
 // EDUCATION IMAGES
 import edu1_1 from './assets/edu_apc1.png';
 import edu1_2 from './assets/edu_apc2.png';
