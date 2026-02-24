@@ -174,7 +174,7 @@ function App() {
   const experienceRef = useRef(null);
   const gallerySectionRef = useRef(null);
 
-  const BACKEND_URL = 'https://personal-website-finals-wb7f.vercel.app/';
+  const BACKEND_URL = 'https://personal-website-finals-wb7f.vercel.app';
 
   const nextImage = (images) => {
     setGalleryIndex((prev) => (prev + 1) % images.length);
